@@ -14,6 +14,9 @@
     <string name="extend_shop_time">Extend Shop Time</string>
     <string name="messages_with_customers">Messages With Customers</string>
     <string name="title_activity_login">Sign in</string>
+    <string name="nearby_locations">Nearby Locations</string>
+    <string name="search_by_item">Search By Item</string>
+
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
