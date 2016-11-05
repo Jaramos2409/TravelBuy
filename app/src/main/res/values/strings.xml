@@ -1,3 +1,31 @@
 <resources>
     <string name="app_name">TravelBuy</string>
+    <string name="home_tab">Home</string>
+    <string name="buy_tab">Buy</string>
+    <string name="sell_tab">Sell</string>
+    <string name="friend_tab">Friends</string>
+    <string name="coming_soon">Coming Soon</string>
+    <string name="nearby_vendors">Nearby Vendors</string>
+    <string name="search_items">Search For Items</string>
+    <string name="messages_with_vendors">Messages With Vendors</string>
+    <string name="create_shop">Create Shop</string>
+    <string name="manage_items">Manage Items</string>
+    <string name="close_shop">Close Shop</string>
+    <string name="extend_shop_time">Extend Shop Time</string>
+    <string name="messages_with_customers">Messages With Customers</string>
+    <string name="title_activity_login">Sign in</string>
+
+    <!-- Strings related to login -->
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password (optional)</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="action_sign_in_google">Sign in with Google Account</string>
+    <string name="error_invalid_email">This email address is invalid</string>
+    <string name="error_invalid_password">This password is too short</string>
+    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_field_required">This field is required</string>
+    <string name="permission_rationale">"Contacts permissions are needed for providing email
+        completions."
+    </string>
 </resources>
