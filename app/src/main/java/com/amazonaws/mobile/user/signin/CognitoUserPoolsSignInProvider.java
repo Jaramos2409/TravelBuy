@@ -33,11 +33,13 @@ import com.amazonaws.mobileconnectors.cognitoidentityprovider.handlers.ForgotPas
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.handlers.GenericHandler;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.handlers.SignUpHandler;
 import com.jaramos2409.travelbuy.R;
+import com.jaramos2409.travelbuy.database.DBTypes;
 import com.jaramos2409.travelbuy.login.ForgotPasswordActivity;
 import com.jaramos2409.travelbuy.login.MFAActivity;
 import com.jaramos2409.travelbuy.login.SignUpActivity;
 import com.jaramos2409.travelbuy.login.SignUpConfirmActivity;
 import com.jaramos2409.travelbuy.util.ViewHelper;
+import com.jaramos2409.travelbuy.database.DBTask;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -57,15 +59,15 @@ import static com.jaramos2409.travelbuy.R.string.title_activity_sign_up;
 import static com.jaramos2409.travelbuy.R.string.title_activity_sign_up_confirm;
 
 /**
- * Manages sign-in using Cognito User Pools.
+ * Manages sign-in using Cognito Shop Pools.
  */
 public class CognitoUserPoolsSignInProvider implements SignInProvider {
     /**
-     * Cognito User Pools attributes.
+     * Cognito Shop Pools attributes.
      */
     public final class AttributeKeys {
         /** Username attribute. */
-        public static final String USERNAME = "username";
+        public static final String USERNAME = "preferred_username";
 
         /** Password attribute. */
         public static final String PASSWORD = "password";
@@ -98,7 +100,7 @@ public class CognitoUserPoolsSignInProvider implements SignInProvider {
     /** Resource ID of the Create Account button. */
     private static final int TEXT_VIEW_CREATE_ACCOUNT_ID = R.id.signIn_textView_CreateNewAccount;
 
-    /** Start of Intent request codes owned by the Cognito User Pools app. */
+    /** Start of Intent request codes owned by the Cognito Shop Pools app. */
     private static final int REQUEST_CODE_START = 0x2970;
 
     /** Request code for password reset Intent. */
@@ -113,7 +115,7 @@ public class CognitoUserPoolsSignInProvider implements SignInProvider {
     /** Request code for account verification Intent. */
     private static final int VERIFICATION_REQUEST_CODE = REQUEST_CODE_START + 45;
 
-    /** Request codes that the Cognito User Pools can handle. */
+    /** Request codes that the Cognito Shop Pools can handle. */
     private static final Set<Integer> REQUEST_CODES = new HashSet<Integer>() {{
         add(FORGOT_PASSWORD_REQUEST_CODE);
         add(SIGN_UP_REQUEST_CODE);
@@ -124,10 +126,10 @@ public class CognitoUserPoolsSignInProvider implements SignInProvider {
     /** The sign-in results adapter from the SignInManager. */
     private IdentityManager.SignInResultsHandler resultsHandler;
 
-    /** Forgot Password processing provided by the Cognito User Pools SDK. */
+    /** Forgot Password processing provided by the Cognito Shop Pools SDK. */
     private ForgotPasswordContinuation forgotPasswordContinuation;
 
-    /** MFA processing provided by the Cognito User Pools SDK. */
+    /** MFA processing provided by the Cognito Shop Pools SDK. */
     private MultiFactorAuthenticationContinuation multiFactorAuthenticationContinuation;
 
     /** Android context. */
@@ -145,13 +147,13 @@ public class CognitoUserPoolsSignInProvider implements SignInProvider {
     /** Sign-in verification code. */
     private String verificationCode;
 
-    /** Active Cognito User Pool. */
+    /** Active Cognito Shop Pool. */
     private static CognitoUserPool cognitoUserPool;
 
-    /** Active Cognito User Pools session. */
+    /** Active Cognito Shop Pools session. */
     private static CognitoUserSession cognitoUserSession;
 
-    /** Latch to ensure Cognito User Pools SDK is initialized before attempting to read the authorization token. */
+    /** Latch to ensure Cognito Shop Pools SDK is initialized before attempting to read the authorization token. */
     private final CountDownLatch initializedLatch = new CountDownLatch(1);
 
     /**
@@ -189,9 +191,11 @@ public class CognitoUserPoolsSignInProvider implements SignInProvider {
         public void onSuccess(final CognitoUser user, final boolean signUpConfirmationState,
                               final CognitoUserCodeDeliveryDetails cognitoUserCodeDeliveryDetails) {
             if (signUpConfirmationState) {
-                Log.d(LOG_TAG, "Signed up. User ID = " + user.getUserId());
+                Log.d(LOG_TAG, "Signed up. Shop ID = " + user.getUserId());
                 ViewHelper.showDialog(activity, activity.getString(title_activity_sign_up),
                         activity.getString(sign_up_success) + " " + user.getUserId());
+
+
             } else {
                 Log.w(LOG_TAG, "Additional confirmation for sign up.");
 
@@ -293,7 +297,7 @@ public class CognitoUserPoolsSignInProvider implements SignInProvider {
     };
 
     /**
-     * Constructor. Initializes the Cognito User Pool.
+     * Constructor. Initializes the Cognito Shop Pool.
      * @param context Android context.
      */
     public CognitoUserPoolsSignInProvider(final Context context) {
@@ -321,6 +325,10 @@ public class CognitoUserPoolsSignInProvider implements SignInProvider {
                                      final Intent data) {
 
         if (Activity.RESULT_OK == resultCode) {
+            final String givenName = data.getStringExtra(AttributeKeys.GIVEN_NAME);
+            final String email = data.getStringExtra(AttributeKeys.EMAIL_ADDRESS);
+            final String phone = data.getStringExtra(AttributeKeys.PHONE_NUMBER);
+
             switch (requestCode) {
                 case FORGOT_PASSWORD_REQUEST_CODE:
                     password = data.getStringExtra(AttributeKeys.PASSWORD);
@@ -335,9 +343,6 @@ public class CognitoUserPoolsSignInProvider implements SignInProvider {
                 case SIGN_UP_REQUEST_CODE:
                     username = data.getStringExtra(AttributeKeys.USERNAME);
                     password = data.getStringExtra(AttributeKeys.PASSWORD);
-                    final String givenName = data.getStringExtra(AttributeKeys.GIVEN_NAME);
-                    final String email = data.getStringExtra(AttributeKeys.EMAIL_ADDRESS);
-                    final String phone = data.getStringExtra(AttributeKeys.PHONE_NUMBER);
 
                     Log.d(LOG_TAG, "username = " + username);
                     Log.d(LOG_TAG, "given_name = " + givenName);
@@ -347,6 +352,7 @@ public class CognitoUserPoolsSignInProvider implements SignInProvider {
                     final CognitoUserAttributes userAttributes = new CognitoUserAttributes();
                     userAttributes.addAttribute(AttributeKeys.GIVEN_NAME, givenName);
                     userAttributes.addAttribute(AttributeKeys.EMAIL_ADDRESS, email);
+                    userAttributes.addAttribute(AttributeKeys.USERNAME, username);
 
                     if (null != phone && phone.length() > 0) {
                         userAttributes.addAttribute(AttributeKeys.PHONE_NUMBER, phone);
@@ -354,6 +360,7 @@ public class CognitoUserPoolsSignInProvider implements SignInProvider {
 
                     cognitoUserPool.signUpInBackground(username, password, userAttributes,
                             null, signUpHandler);
+
 
                     break;
                 case MFA_REQUEST_CODE:
@@ -391,7 +398,7 @@ public class CognitoUserPoolsSignInProvider implements SignInProvider {
         this.activity = signInActivity;
         this.resultsHandler = resultsHandler;
 
-        // User Pools requires sign in with the username or verified channel.
+        // Shop Pools requires sign in with the username or verified channel.
         // Mobile Hub does not set up email verification because it requires SES verification.
         // Hence, prompt customers to login using the username or phone number.
         final EditText emailField = (EditText) activity.findViewById(EDIT_TEXT_USERNAME_ID);
@@ -441,7 +448,7 @@ public class CognitoUserPoolsSignInProvider implements SignInProvider {
     /** {@inheritDoc} */
     @Override
     public String getDisplayName() {
-        return "Amazon Cognito Your User Pools";
+        return "TravelBuy";
     }
 
     /** {@inheritDoc} */
@@ -475,7 +482,7 @@ public class CognitoUserPoolsSignInProvider implements SignInProvider {
     /** {@inheritDoc} */
     @Override
     public String refreshToken() {
-        // Cognito User Pools SDK handles token refresh.
+        // Cognito Shop Pools SDK handles token refresh.
         return getToken();
     }
 
@@ -512,11 +519,12 @@ public class CognitoUserPoolsSignInProvider implements SignInProvider {
     /** {@inheritDoc} */
     @Override
     public void reloadUserInfo() {
-        // Cognito User Pools SDK handles user details refresh when token is refreshed.
+        // Cognito Shop Pools SDK handles user details refresh when token is refreshed.
         getToken();
     }
 
     public static CognitoUserPool getPool() {
         return cognitoUserPool;
     }
+
 }

@@ -19,28 +19,13 @@
             />
 
         <Button
-            android:id="@+id/close_shop_btn"
+            android:id="@+id/close_open_shop_btn"
             android:text="@string/close_shop"
             android:layout_width="match_parent"
             android:layout_height="100sp"
             android:layout_margin="20sp"
             />
 
-        <Button
-            android:id="@+id/extend_shop_time_btn"
-            android:text="@string/extend_shop_time"
-            android:layout_width="match_parent"
-            android:layout_height="100sp"
-            android:layout_margin="20sp"
-            />
-
-        <Button
-            android:id="@+id/message_customers_btn"
-            android:text="@string/messages_with_customers"
-            android:layout_width="match_parent"
-            android:layout_height="100sp"
-            android:layout_margin="20sp"
-            />
     </LinearLayout>
 
 </ScrollView>

@@ -12,7 +12,7 @@
 
         <Button
             android:id="@+id/create_shop_btn"
-            android:text="@string/create_shop"
+            android:text="@string/create_login_shop"
             android:layout_width="match_parent"
             android:layout_height="100sp"
             android:layout_margin="20sp"
