@@ -68,4 +68,7 @@ public class MainMenuFragment extends Fragment {
         inflater.inflate(R.menu.main_menu_fragment, menu);
 
     }
+
+
 }
+

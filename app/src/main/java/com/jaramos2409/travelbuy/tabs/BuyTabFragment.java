@@ -3,8 +3,6 @@ package com.jaramos2409.travelbuy.tabs;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,9 +14,10 @@ import com.jaramos2409.travelbuy.SearchItemsActivity;
 
 public class BuyTabFragment extends Fragment {
 
+    private final static String LOG_TAG = BuyTabFragment.class.getSimpleName();
+
     private Button mNearbyVendorsBtn;
     private Button mSearchItemsBtn;
-    private Button mMessagesVendorsBtn;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -47,13 +46,6 @@ public class BuyTabFragment extends Fragment {
             }
         });
 
-        mMessagesVendorsBtn = (Button) view.findViewById(R.id.message_vendors_btn);
-        mMessagesVendorsBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
 
         return view;
     }
