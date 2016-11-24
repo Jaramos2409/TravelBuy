@@ -1,16 +1,27 @@
 package com.jaramos2409.travelbuy.database;
 
+import android.content.ClipData;
 import android.util.Log;
 
 import com.amazonaws.AmazonClientException;
+import com.amazonaws.AmazonServiceException;
 import com.amazonaws.mobile.AWSMobileClient;
 import com.amazonaws.mobile.user.signin.CognitoUserPoolsSignInProvider;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUser;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUserPool;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMapper;
+import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBQueryExpression;
+import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBScanExpression;
+import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.PaginatedQueryList;
+import com.amazonaws.models.nosql.ShopItemsDO;
 import com.amazonaws.models.nosql.ShopsDO;
+import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.jaramos2409.travelbuy.datamodels.Shop;
+import com.jaramos2409.travelbuy.datamodels.ShopItem;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -139,7 +150,65 @@ public class DBQueryHandler {
         return shop;
     }
 
+    public static void insertShopItem(ShopItem shopItem)
+    {
+        // Fetch the default configured DynamoDB ObjectMapper
+        final DynamoDBMapper dynamoDBMapper = AWSMobileClient.defaultMobileClient().getDynamoDBMapper();
+
+        ShopItemsDO shopItemInfo = new ShopItemsDO();
+
+        shopItemInfo.setShopId(shopItem.getShopId());
+        shopItemInfo.setCategory(shopItem.getCategory());
+        shopItemInfo.setDescription(shopItem.getDescription());
+        shopItemInfo.setImageObject(shopItem.getImageObject());
+
+        if (shopItem.getItemId().isEmpty()) {
+            shopItemInfo.setItemId("item" + UUID.randomUUID());
+        } else {
+            shopItemInfo.setItemId(shopItem.getItemId());
+        }
+
+        shopItemInfo.setName(shopItem.getName());
+        shopItemInfo.setPrice(shopItem.getPrice());
+
+        AmazonClientException lastException = null;
+
+        try {
+            dynamoDBMapper.save(shopItemInfo);
+        } catch (final AmazonClientException ex) {
+            Log.e(LOG_TAG, "Failed saving item : " + ex.getMessage(), ex);
+            lastException = ex;
+        }
+
+    }
+
+    public static ArrayList<ShopItem> loadShopItems()
+    {
+        ArrayList<ShopItem> shopItems = new ArrayList<>();
+
+        // Fetch the default configured DynamoDB ObjectMapper
+        final DynamoDBMapper dynamoDBMapper = AWSMobileClient.defaultMobileClient().getDynamoDBMapper();
+
+        ShopItemsDO shopInfo = dynamoDBMapper.load(ShopItemsDO.class,
+                AWSMobileClient.defaultMobileClient().getIdentityManager().getCachedUserID());
 
 
+        ShopItemsDO shopItemsDO = new ShopItemsDO();
+        shopItemsDO.setShopId(Shop.getCurrentShopInfo().getShopId());
+
+        DynamoDBQueryExpression<ShopItemsDO> queryExpression = new DynamoDBQueryExpression<ShopItemsDO>()
+                .withHashKeyValues(shopItemsDO)
+                .withConsistentRead(false);
+
+        PaginatedQueryList<ShopItemsDO> result = dynamoDBMapper.query(ShopItemsDO.class, queryExpression);
+
+        for (ShopItemsDO shopItemDO: result) {
+            shopItems.add(new ShopItem(shopItemDO.getName(), shopItemDO.getPrice(), shopItemDO.getCategory(),
+                    shopItemDO.getDescription(), shopItemDO.getImageObject(), shopItemDO.getItemId(), shopItemDO.getShopId()));
+        }
+
+
+        return shopItems;
+    }
 
 }

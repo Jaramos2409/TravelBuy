@@ -1,9 +1,14 @@
 package com.jaramos2409.travelbuy.datamodels;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.util.ArrayList;
+
 /**
  * Created by EVA Unit 02 on 11/19/2016.
  */
-public class Shop {
+public class Shop  {
 
     private static Shop sCurrentShopInfo = new Shop();
     public static Shop getCurrentShopInfo() {

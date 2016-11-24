@@ -18,12 +18,33 @@
     <string name="nearby_locations">Nearby Locations</string>
     <string name="search_by_item">Search By Item</string>
     <string name="menu_search">Search</string>
+    <string name="description">Description</string>
+    <string name="item_name">Name</string>
+    <string name="price">Price</string>
+    <string name="add_item">Add Item</string>
+    <string name="edit_item">Edit Item</string>
+    <string name="menu_refresh">Refresh</string>
 
     <string name="search_hint">Name of the item...</string>
 
 
-    <string-array name="planets_array">
+    <string-array name="category_array_search">
         <item>All</item>
+        <item>Appliances</item>
+        <item>Arts and Crafts</item>
+        <item>Automotive</item>
+        <item>Baby</item>
+        <item>Books</item>
+        <item>Clothing</item>
+        <item>Home and Kitchen</item>
+        <item>Toys</item>
+        <item>Video Games</item>
+        <item>Miscellaneous</item>
+        <item>Music</item>
+        <item>Technology</item>
+    </string-array>
+
+    <string-array name="category_array_user">
         <item>Appliances</item>
         <item>Arts and Crafts</item>
         <item>Automotive</item>
