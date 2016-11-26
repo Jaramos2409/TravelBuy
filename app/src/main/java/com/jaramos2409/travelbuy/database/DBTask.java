@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
+//import com.jaramos2409.travelbuy.ShopItemActivity;
 import com.jaramos2409.travelbuy.datamodels.Shop;
 import com.jaramos2409.travelbuy.datamodels.ShopItem;
 
@@ -62,9 +63,9 @@ public class DBTask extends
             Shop.setCurrentShopInfo(DBQueryHandler.loadShopInfo());
             Shop.setOriginalShopInfo(Shop.getCurrentShopInfo());
         } else if (params[0].equals(DBTypes.INSERT_ITEM)) {
-            DBQueryHandler.insertShopItem(mShopItem);
+            DBQueryHandler.insertShopItem(mShopItem, mContext);
         } else if (params[0].equals(DBTypes.LOAD_ITEMS_LIST)) {
-            mShopItemsList = DBQueryHandler.loadShopItems();
+            mShopItemsList = DBQueryHandler.loadShopItems(mContext);
         } else {
             Log.d(LOG_TAG, "Task Malfunction");
         }
@@ -74,7 +75,8 @@ public class DBTask extends
 
     @Override
     protected void onPostExecute(Void result) {
-        if (mProgressDialog != null) {
+
+        if (mProgressDialog != null && mProgressDialog.isShowing()) {
             mProgressDialog.dismiss();
         }
     }
@@ -93,5 +95,13 @@ public class DBTask extends
 
     public void setShopItemsList(ArrayList<ShopItem> shopItemsList) {
         mShopItemsList = shopItemsList;
+    }
+
+    public ProgressDialog getProgressDialog() {
+        return mProgressDialog;
+    }
+
+    public void setProgressDialog(ProgressDialog progressDialog) {
+        mProgressDialog = progressDialog;
     }
 }

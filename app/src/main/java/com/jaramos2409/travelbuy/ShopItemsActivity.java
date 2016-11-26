@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -13,6 +14,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.amazonaws.mobile.AWSMobileClient;
 import com.jaramos2409.travelbuy.database.DBQueryHandler;
 import com.jaramos2409.travelbuy.datamodels.ShopItem;
 
@@ -54,6 +56,8 @@ public class ShopItemsActivity extends AppCompatActivity {
         mSwipeRefreshLayout.setOnRefreshListener(swipeRefreshHandler);
         setRefreshProgrammatically();
 
+        registerForContextMenu(mSearchItemListView);
+
         Toast.makeText(context, "Press on the Item you want to edit.", Toast.LENGTH_LONG).show();
     }
 
@@ -93,13 +97,48 @@ public class ShopItemsActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v,
+                                    ContextMenu.ContextMenuInfo menuInfo) {
+        if (v.getId() == R.id.shop_items_listview) {
+            AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)menuInfo;
+            menu.setHeaderTitle(mShopItemsList.get(info.position).getName());
+            String[] menuItems = getResources().getStringArray(R.array.item_shop_menu_long_press);
+            for (int i = 0; i<menuItems.length; i++) {
+                menu.add(Menu.NONE, i, i, menuItems[i]);
+            }
+        }
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        final AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        switch(item.getItemId()){
+            case 0:
+                ShopItem shopItem = mShopItemsList.get(info.position);
+                Intent intent = ShopItemActivity.newIntent(this, true, shopItem);
+                startActivityForResult(intent, RESULT_ADD_EDIT_ITEM);
+                break;
+            case 1:
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        DBQueryHandler.deleteItem(mShopItemsList.get(info.position), context);
+                        setRefreshProgrammatically();
+                    }
+                }).start();
+                break;
+        }
+        return super.onContextItemSelected(item);
+    }
+
     private SwipeRefreshLayout.OnRefreshListener swipeRefreshHandler = new SwipeRefreshLayout.OnRefreshListener() {
         @Override
         public void onRefresh() {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    mShopItemsList = DBQueryHandler.loadShopItems();
+                    mShopItemsList = DBQueryHandler.loadShopItems(context);
                     updateListData();
                 }
             }).start();

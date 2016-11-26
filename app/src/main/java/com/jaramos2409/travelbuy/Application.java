@@ -4,6 +4,7 @@ import android.support.multidex.MultiDexApplication;
 import android.util.Log;
 
 import com.amazonaws.mobile.AWSMobileClient;
+import com.jaramos2409.travelbuy.database.DBQueryHandler;
 
 /**
  * Application class responsible for initializing singletons and other common components.
@@ -23,7 +24,12 @@ public class Application extends MultiDexApplication {
     private void initializeApplication() {
 
         // Initialize the AWS Mobile Client
-        AWSMobileClient.initializeMobileClientIfNecessary(getApplicationContext());
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                AWSMobileClient.initializeMobileClientIfNecessary(getApplicationContext());
+            }
+        }).start();
 
         // ... Put any application-specific initialization logic here ...
     }

@@ -3,6 +3,7 @@ package com.jaramos2409.travelbuy.datamodels;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.io.File;
 import java.util.Locale;
 
 /**
@@ -13,18 +14,18 @@ public class ShopItem implements Parcelable {
     private double mPrice;
     private String mCategory;
     private String mDescription;
-    private String mImageObject;
     private String mItemId;
     private String mShopId;
+    private String mItemPhotoPath;
 
-    public ShopItem(String name, double price, String category, String description, String imageObject, String itemId, String shopId) {
+    public ShopItem(String name, double price, String category, String description, String itemId, String shopId, String itemPhotoData) {
         this.mName = name;
         this.mPrice = price;
         this.mCategory = category;
         this.mDescription = description;
-        this.mImageObject = imageObject;
         this.mItemId = itemId;
         this.mShopId = shopId;
+        this.mItemPhotoPath = itemPhotoData;
     }
 
     public ShopItem() {
@@ -32,9 +33,9 @@ public class ShopItem implements Parcelable {
         this.mPrice = 0.0;
         this.mCategory = "";
         this.mDescription = "";
-        this.mImageObject = "";
         this.mItemId = "";
         this.mShopId = "";
+        this.mItemPhotoPath = "";
     }
 
     public ShopItem(Parcel in) {
@@ -43,8 +44,8 @@ public class ShopItem implements Parcelable {
         mShopId = in.readString();
         mCategory = in.readString();
         mDescription = in.readString();
-        mImageObject = in.readString();
         mItemId = in.readString();
+        mItemPhotoPath = in.readString();
     }
 
     @Override
@@ -72,8 +73,8 @@ public class ShopItem implements Parcelable {
         dest.writeString(mShopId);
         dest.writeString(mCategory);
         dest.writeString(mDescription);
-        dest.writeString(mImageObject);
         dest.writeString(mItemId);
+        dest.writeString(mItemPhotoPath);
     }
 
     /**
@@ -127,14 +128,6 @@ public class ShopItem implements Parcelable {
         this.mDescription = description;
     }
 
-    public String getImageObject() {
-        return mImageObject;
-    }
-
-    public void setImageObject(String imageObject) {
-        this.mImageObject = imageObject;
-    }
-
     public String getItemId() {
         return mItemId;
     }
@@ -149,5 +142,13 @@ public class ShopItem implements Parcelable {
 
     public void setShopId(String shopId) {
         this.mShopId = shopId;
+    }
+
+    public String getItemPhotoPath() {
+        return mItemPhotoPath;
+    }
+
+    public void setItemPhotoPath(String itemPhotoPath) {
+        mItemPhotoPath = itemPhotoPath;
     }
 }

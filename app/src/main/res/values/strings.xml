@@ -1,4 +1,10 @@
 <resources>
+    <!-- Suffix after '-' must be the app package name as specified in the build.gradle file. This
+       is used by the com.amazonaws.mobile.downloader.query.DownloadQueueProvider class. -->
+    <string name="download_queue_provider_authority">com.amazonaws.mobile.downloader-com.amazon.mysampleapp</string>
+    <!-- This can be anything, but it should be unique to the app. -->
+    <string name="content_file_provider_authority">com.mysampleapp.fileprovider</string>
+
     <string name="app_name">TravelBuy</string>
     <string name="home_tab">Home</string>
     <string name="buy_tab">Buy</string>
@@ -21,12 +27,20 @@
     <string name="description">Description</string>
     <string name="item_name">Name</string>
     <string name="price">Price</string>
+    <string name="add_photo">Add Photo</string>
+    <string name="item_photo_thum">Item Photo Thumbnail</string>
     <string name="add_item">Add Item</string>
     <string name="edit_item">Edit Item</string>
     <string name="menu_refresh">Refresh</string>
+    <string name="search_with_text">Search With Text:</string>
+    <string name="search_by_category">Search By Category</string>
 
     <string name="search_hint">Name of the item...</string>
 
+    <string-array name="item_shop_menu_long_press">
+        <item>Edit</item>
+        <item>Delete</item>
+    </string-array>
 
     <string-array name="category_array_search">
         <item>All</item>

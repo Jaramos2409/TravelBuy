@@ -243,7 +243,7 @@ public class CognitoUserPoolsSignInProvider implements SignInProvider {
 
             if (null != resultsHandler) {
                 ViewHelper.showDialog(activity, activity.getString(title_activity_sign_in),
-                        activity.getString(login_success) + " " + userSession.getIdToken());
+                        activity.getString(login_success));
 
                 resultsHandler.onSuccess(CognitoUserPoolsSignInProvider.this);
             }
