@@ -44,12 +44,14 @@
             android:layout_width="wrap_content"
             android:id="@+id/signIn_textView_CreateNewAccount"
             android:text="Create Account"
+            android:layout_margin="@dimen/sign_in_button_margin"
             />
 
         <TextView
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:id="@+id/signIn_textView_ForgotPassword"
+            android:layout_margin="@dimen/sign_in_button_margin"
             android:text="Forgot Password"
             />
     </LinearLayout>

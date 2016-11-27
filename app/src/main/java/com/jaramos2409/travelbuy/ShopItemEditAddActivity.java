@@ -1,10 +1,8 @@
 package com.jaramos2409.travelbuy;
 
-import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -12,8 +10,6 @@ import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.provider.MediaStore;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -27,14 +23,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.jaramos2409.travelbuy.database.DBQueryHandler;
-import com.jaramos2409.travelbuy.database.DBTask;
 import com.jaramos2409.travelbuy.database.DBTypes;
 import com.jaramos2409.travelbuy.datamodels.Shop;
 import com.jaramos2409.travelbuy.datamodels.ShopItem;
 
 import org.apache.commons.lang3.math.NumberUtils;
 
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Locale;
 
@@ -42,11 +36,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import static com.jaramos2409.travelbuy.TravelBuyActivity.READ_EXST;
+public class ShopItemEditAddActivity extends AppCompatActivity {
 
-public class ShopItemActivity extends AppCompatActivity {
-
-    private static final String LOG_TAG = ShopItemActivity.class.getSimpleName();
+    private static final String LOG_TAG = ShopItemEditAddActivity.class.getSimpleName();
 
     private static final String EXTRA_IS_EDIT_ITEM = "com.jaramos2409.travelbuy.is_edit_item";
     private static final String EXTRA_ITEM_TO_EDIT = "com.jaramos2409.travelbuy.edit_item";
@@ -70,12 +62,12 @@ public class ShopItemActivity extends AppCompatActivity {
     private AddUpdateItemTask task;
 
     public static Intent newIntent(Context packageContext) {
-        Intent intent = new Intent(packageContext, ShopItemActivity.class);
+        Intent intent = new Intent(packageContext, ShopItemEditAddActivity.class);
         return intent;
     }
 
     public static Intent newIntent(Context packageContext, boolean isEditItem, ShopItem shopItem) {
-        Intent intent = new Intent(packageContext, ShopItemActivity.class);
+        Intent intent = new Intent(packageContext, ShopItemEditAddActivity.class);
         intent.putExtra(EXTRA_IS_EDIT_ITEM, isEditItem);
         intent.putExtra(EXTRA_ITEM_TO_EDIT, shopItem);
         return intent;
@@ -84,7 +76,7 @@ public class ShopItemActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_shop_item);
+        setContentView(R.layout.activity_shop_item_add_or_edit);
         ButterKnife.bind(this);
 
         photoPath = "";
@@ -259,7 +251,7 @@ public class ShopItemActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Void result) {
-            if (ShopItemActivity.this.isDestroyed()) { // or call isFinishing() if min sdk version < 17
+            if (ShopItemEditAddActivity.this.isDestroyed()) { // or call isFinishing() if min sdk version < 17
                 return;
             }
 

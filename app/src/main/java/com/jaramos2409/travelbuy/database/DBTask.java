@@ -2,10 +2,11 @@ package com.jaramos2409.travelbuy.database;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.location.Location;
 import android.os.AsyncTask;
 import android.util.Log;
 
-//import com.jaramos2409.travelbuy.ShopItemActivity;
+//import com.jaramos2409.travelbuy.ShopItemEditAddActivity;
 import com.jaramos2409.travelbuy.datamodels.Shop;
 import com.jaramos2409.travelbuy.datamodels.ShopItem;
 
@@ -19,6 +20,8 @@ public class DBTask extends
 
     private ShopItem mShopItem;
     private ArrayList<ShopItem> mShopItemsList;
+    private String mEmail;
+    private Location mLocation;
 
     private static final String LOG_TAG = DBTask.class.getSimpleName();
 
@@ -29,6 +32,13 @@ public class DBTask extends
         mContext = context;
         mShopItem = new ShopItem();
         mShopItemsList = new ArrayList<>();
+    }
+
+    public DBTask(Context context, Location location) {
+        mContext = context;
+        mShopItem = new ShopItem();
+        mShopItemsList = new ArrayList<>();
+        mLocation = location;
     }
 
     public DBTask() {
@@ -42,6 +52,7 @@ public class DBTask extends
         mContext = context;
         mShopItem = shopItem;
         mShopItemsList = new ArrayList<>();
+        mEmail = "";
     }
 
     @Override
@@ -64,9 +75,11 @@ public class DBTask extends
             Shop.setOriginalShopInfo(Shop.getCurrentShopInfo());
         } else if (params[0].equals(DBTypes.INSERT_ITEM)) {
             DBQueryHandler.insertShopItem(mShopItem, mContext);
-        } else if (params[0].equals(DBTypes.LOAD_ITEMS_LIST)) {
-            mShopItemsList = DBQueryHandler.loadShopItems(mContext);
-        } else {
+        } else if (params[0].equals(DBTypes.GET_SHOP_EMAIL)) {
+            mEmail = DBQueryHandler.getShopEmail(mShopItem.getShopId());
+        }else if (params[0].equals(DBTypes.STORE_LOCATION)) {
+            DBQueryHandler.storeLocation(mLocation);
+        }else {
             Log.d(LOG_TAG, "Task Malfunction");
         }
 
@@ -75,7 +88,6 @@ public class DBTask extends
 
     @Override
     protected void onPostExecute(Void result) {
-
         if (mProgressDialog != null && mProgressDialog.isShowing()) {
             mProgressDialog.dismiss();
         }
@@ -103,5 +115,13 @@ public class DBTask extends
 
     public void setProgressDialog(ProgressDialog progressDialog) {
         mProgressDialog = progressDialog;
+    }
+
+    public String getEmail() {
+        return mEmail;
+    }
+
+    public void setEmail(String email) {
+        mEmail = email;
     }
 }

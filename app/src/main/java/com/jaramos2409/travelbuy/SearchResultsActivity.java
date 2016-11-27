@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.jaramos2409.travelbuy.database.DBQueryHandler;
@@ -16,6 +18,8 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
+import butterknife.OnItemClick;
 
 /**
  * Created by EVA Unit 02 on 11/19/2016.
@@ -136,5 +140,14 @@ public class SearchResultsActivity extends AppCompatActivity {
         public void setCategory(String category) {
             mCategory = category;
         }
+
+    }
+
+    @OnItemClick(R.id.search_results_list)
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        ShopItem shopItem = mShopItemsSearchResultsList.get(position);
+
+        Intent intent = ShopItemVendorActivity.newIntent(context, shopItem);
+        startActivity(intent);
     }
 }

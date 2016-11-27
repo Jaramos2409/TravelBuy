@@ -1,6 +1,7 @@
 package com.jaramos2409.travelbuy.database;
 
 import android.content.Context;
+import android.location.Location;
 import android.os.Environment;
 import android.util.Log;
 
@@ -26,8 +27,11 @@ import com.amazonaws.services.dynamodbv2.model.Condition;
 import com.amazonaws.services.dynamodbv2.model.QueryRequest;
 import com.amazonaws.services.dynamodbv2.model.QueryResult;
 import com.amazonaws.services.dynamodbv2.model.ReturnConsumedCapacity;
+import com.amazonaws.services.dynamodbv2.model.ReturnValue;
 import com.amazonaws.services.dynamodbv2.model.ScanRequest;
 import com.amazonaws.services.dynamodbv2.model.ScanResult;
+import com.amazonaws.services.dynamodbv2.model.UpdateItemRequest;
+import com.amazonaws.services.dynamodbv2.model.UpdateItemResult;
 import com.jaramos2409.travelbuy.datamodels.Shop;
 import com.jaramos2409.travelbuy.datamodels.ShopItem;
 
@@ -40,13 +44,14 @@ import java.util.Map;
 import java.util.UUID;
 
 import static com.amazonaws.mobile.AWSConfiguration.AMAZON_S3_USER_FILES_BUCKET;
+import static com.amazonaws.mobile.AWSConfiguration.AMAZON_SHOP_ITEMS_TABLE_NAME;
+import static com.amazonaws.mobile.AWSConfiguration.AMAZON_SHOP_TABLE_NAME;
 
 /**
  * Created by EVA Unit 02 on 11/18/2016.
  */
 public class DBQueryHandler {
     private final static String LOG_TAG = DBQueryHandler.class.getSimpleName();
-    private final static String SHOP_ITEMS_TABLE_NAME = "travelbuy-mobilehub-417374176-shopItems";
 
     public static Shop loadShopInfo()
     {
@@ -162,10 +167,9 @@ public class DBQueryHandler {
                 break;
             }
         }
-
     }
 
-    public static ArrayList<ShopItem> loadShopItems(Context context)
+    public static ArrayList<ShopItem> loadShopItems(Context context, String shopId)
     {
         ArrayList<ShopItem> shopItems = new ArrayList<>();
 
@@ -173,7 +177,7 @@ public class DBQueryHandler {
         final DynamoDBMapper dynamoDBMapper = AWSMobileClient.defaultMobileClient().getDynamoDBMapper();
 
         ShopItemsDO shopItemsDO = new ShopItemsDO();
-        shopItemsDO.setShopId(Shop.getCurrentShopInfo().getShopId());
+        shopItemsDO.setShopId(shopId);
 
         DynamoDBQueryExpression<ShopItemsDO> queryExpression = new DynamoDBQueryExpression<ShopItemsDO>()
                 .withHashKeyValues(shopItemsDO)
@@ -264,7 +268,6 @@ public class DBQueryHandler {
         }
     }
 
-
     public static ArrayList<ShopItem> searchShopItems(Context context, String query, String category)
     {
         ArrayList<ShopItem> shopItems = new ArrayList<>();
@@ -279,7 +282,7 @@ public class DBQueryHandler {
         Map<String, String> expressionAttributeNames = new HashMap<>();
 
 
-        scanRequest.withTableName(SHOP_ITEMS_TABLE_NAME);
+        scanRequest.withTableName(AMAZON_SHOP_ITEMS_TABLE_NAME);
         scanRequest.withIndexName("Name");
 
         boolean isQueryEmpty = query.isEmpty();
@@ -309,8 +312,6 @@ public class DBQueryHandler {
         scanRequest.withReturnConsumedCapacity(ReturnConsumedCapacity.TOTAL);
 
         ScanResult result = dynamoDB.scan(scanRequest);
-
-        result.getItems();
 
         List<ShopItemsDO> mappedItems = new ArrayList<>();
 
@@ -366,5 +367,53 @@ public class DBQueryHandler {
         }
 
         return shopItems;
+    }
+
+    public static String getShopEmail(String shopId) {
+
+        // Fetch the default configured DynamoDB ObjectMapper
+        final DynamoDBMapper dynamoDBMapper = AWSMobileClient.defaultMobileClient().getDynamoDBMapper();
+
+        final AmazonDynamoDB dynamoDB = AWSMobileClient.defaultMobileClient().getDynamoDBClient();
+
+        ScanRequest scanRequest = new ScanRequest();
+        Map<String,AttributeValue> expressionAttributeValues = new HashMap<>();
+        Map<String, String> expressionAttributeNames = new HashMap<>();
+
+        scanRequest.withTableName(AMAZON_SHOP_TABLE_NAME);
+        scanRequest.withFilterExpression("#N = :n");
+        expressionAttributeValues.put(":n", new AttributeValue(shopId));
+        expressionAttributeNames.put("#N", "shopId");
+        scanRequest.withExpressionAttributeValues(expressionAttributeValues);
+        scanRequest.withExpressionAttributeNames(expressionAttributeNames);
+        scanRequest.withReturnConsumedCapacity(ReturnConsumedCapacity.TOTAL);
+
+        ScanResult result = dynamoDB.scan(scanRequest);
+
+        ShopsDO shop = new ShopsDO();
+
+        for(Map<String, AttributeValue> item : result.getItems()) {
+            shop = dynamoDBMapper.marshallIntoObject(ShopsDO.class, item);
+        }
+
+        return shop.getEmail();
+    }
+
+    public static void storeLocation(Location location) {
+        // Fetch the default configured DynamoDB ObjectMapper
+        final DynamoDBMapper dynamoDBMapper = AWSMobileClient.defaultMobileClient().getDynamoDBMapper();
+
+        final AmazonDynamoDB dynamoDB = AWSMobileClient.defaultMobileClient().getDynamoDBClient();
+
+        UpdateItemRequest updateLongLat = new UpdateItemRequest();
+        updateLongLat.setTableName(AMAZON_SHOP_TABLE_NAME);
+        updateLongLat.addKeyEntry("userId",
+                new AttributeValue(AWSMobileClient.defaultMobileClient().getIdentityManager().getCachedUserID()));
+        updateLongLat.withUpdateExpression("set latitude = :lat AND set longitude = :long");
+        updateLongLat.addExpressionAttributeValuesEntry(":lat", new AttributeValue(Double.toString(location.getLatitude())));
+        updateLongLat.addExpressionAttributeValuesEntry(":long", new AttributeValue(Double.toString(location.getLongitude())));
+        updateLongLat.setReturnValues(ReturnValue.NONE);
+
+        UpdateItemResult updateResult = dynamoDB.updateItem(updateLongLat);
     }
 }

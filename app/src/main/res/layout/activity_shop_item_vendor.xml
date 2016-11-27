@@ -9,13 +9,13 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="10dp"
     android:orientation="vertical"
-    tools:context="com.jaramos2409.travelbuy.ShopItemActivity">
+    tools:context="com.jaramos2409.travelbuy.ShopItemEditAddActivity">
 
     <ImageView
-        android:id="@+id/item_photo"
+        android:id="@+id/item_photo_vendor"
         android:contentDescription="@string/add_photo"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_gravity="center"
         android:layout_weight="1"
         android:src="@mipmap/ic_add_photo" />
@@ -23,24 +23,32 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:orientation="vertical"
-        android:layout_weight="1">
+        android:layout_gravity="center"
+        android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:id="@+id/item_name"
+            android:id="@+id/item_name_vendor"
             android:orientation="vertical">
 
-            <EditText
-                android:id="@+id/item_name_text"
-                android:layout_width="300dp"
+            <TextView
+                android:id="@+id/item_name_text_vendor"
+                android:layout_width="wrap_content"
                 android:layout_height="0dp"
                 android:layout_weight="1"
-                android:hint="@string/item_name"
+                android:textSize="30sp"
+                android:text="@string/item_name"
                 />
+
+            <TextView
+                android:id="@+id/price_text_vendor"
+                android:layout_width="wrap_content"
+                android:textSize="20sp"
+                android:layout_height="wrap_content"
+                android:text="@string/price"
+                android:layout_gravity="center"/>
 
         </LinearLayout>
 
@@ -48,16 +56,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/description_edit_text"
-            android:layout_below="@id/item_name">
+            android:layout_margin="@dimen/activity_vertical_margin">
 
-            <EditText
-                android:id="@+id/description_text"
+            <TextView
+                android:id="@+id/description_text_vendor"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:hint="@string/description"
-                android:inputType="textCapSentences|textMultiLine"
-                android:maxLength="2000"
+                android:textSize="15sp"
+                android:text="@string/description"
                 android:maxLines="4" />
 
         </LinearLayout>
@@ -65,38 +72,35 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/price_edit_text"
-            android:layout_below="@id/description_edit_text">
+            android:gravity="center">
 
-            <EditText
-                android:id="@+id/price_text"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:inputType="numberDecimal"
-                android:hint="@string/price"/>
+            <Button
+                android:id="@+id/email_vendor_btn"
+                android:text="@string/email_vendor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
 
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/price_edit_text"
+            android:layout_margin="@dimen/activity_horizontal_margin"
             android:gravity="center">
 
-            <Spinner
+            <Button
+                android:id="@+id/vendor_shop_btn"
+                android:text="@string/go_to_vendor_shop"
                 android:layout_width="wrap_content"
-                android:layout_height="@dimen/sign_in_button_height"
-                android:id="@+id/item_category"
-                android:layout_weight="1"
-                android:entries="@array/category_array_user"/>
+                android:layout_height="wrap_content"
+                android:layout_weight="1"/>
 
             <Button
-                android:layout_width="@dimen/sign_in_button_width"
-                android:layout_height="@dimen/sign_in_button_height"
-                android:layout_weight="1"
-                android:id="@+id/add_item_button"
-                android:text="@string/add_item"/>
+                android:id="@+id/report_shop_item_btn"
+                android:text="@string/report_item"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"/>
 
         </LinearLayout>
     </LinearLayout>

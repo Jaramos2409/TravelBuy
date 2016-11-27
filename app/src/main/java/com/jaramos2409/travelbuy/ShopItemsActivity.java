@@ -14,8 +14,8 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.amazonaws.mobile.AWSMobileClient;
 import com.jaramos2409.travelbuy.database.DBQueryHandler;
+import com.jaramos2409.travelbuy.datamodels.Shop;
 import com.jaramos2409.travelbuy.datamodels.ShopItem;
 
 import java.util.ArrayList;
@@ -61,7 +61,6 @@ public class ShopItemsActivity extends AppCompatActivity {
         Toast.makeText(context, "Press on the Item you want to edit.", Toast.LENGTH_LONG).show();
     }
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -74,7 +73,7 @@ public class ShopItemsActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()) {
             case R.id.menu_add_item:
-                Intent intent = ShopItemActivity.newIntent(this);
+                Intent intent = ShopItemEditAddActivity.newIntent(this);
                 startActivityForResult(intent, RESULT_ADD_EDIT_ITEM);
                 return true;
             default:
@@ -116,7 +115,7 @@ public class ShopItemsActivity extends AppCompatActivity {
         switch(item.getItemId()){
             case 0:
                 ShopItem shopItem = mShopItemsList.get(info.position);
-                Intent intent = ShopItemActivity.newIntent(this, true, shopItem);
+                Intent intent = ShopItemEditAddActivity.newIntent(this, true, shopItem);
                 startActivityForResult(intent, RESULT_ADD_EDIT_ITEM);
                 break;
             case 1:
@@ -138,7 +137,7 @@ public class ShopItemsActivity extends AppCompatActivity {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    mShopItemsList = DBQueryHandler.loadShopItems(context);
+                    mShopItemsList = DBQueryHandler.loadShopItems(context, Shop.getCurrentShopInfo().getShopId());
                     updateListData();
                 }
             }).start();
@@ -171,7 +170,7 @@ public class ShopItemsActivity extends AppCompatActivity {
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         ShopItem shopItem = mShopItemsList.get(position);
 
-        Intent intent = ShopItemActivity.newIntent(this, true, shopItem);
+        Intent intent = ShopItemEditAddActivity.newIntent(this, true, shopItem);
         startActivityForResult(intent, RESULT_ADD_EDIT_ITEM);
     }
 }

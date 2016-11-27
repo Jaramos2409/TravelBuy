@@ -34,6 +34,7 @@
     <string name="menu_refresh">Refresh</string>
     <string name="search_with_text">Search With Text:</string>
     <string name="search_by_category">Search By Category</string>
+    <string name="set_shop_location">Set Shop Location</string>
 
     <string name="search_hint">Name of the item...</string>
 
@@ -120,6 +121,10 @@
     <string name="sign_up_confirm_success">Sign up confirmation succeeded.</string>
     <string name="sign_up_confirm_failed">Sign up confirmation failed.</string>
     <string name="search_title">Search</string>
+    <string name="name">Name</string>
+    <string name="email_vendor">Email Vendor</string>
+    <string name="go_to_vendor_shop">Go To Vendor Shop</string>
+    <string name="report_item">Report Item</string>
 
 
 </resources>
