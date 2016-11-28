@@ -74,6 +74,13 @@ public class ShopItemVendorActivity extends AppCompatActivity {
 
         mItemPhotoImageView.setImageBitmap(thumbnail);
 
+        mItemPhotoImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("content://media/external/images/media/16")));
+            }
+        });
+
         mEmailBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

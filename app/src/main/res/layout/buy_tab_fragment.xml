@@ -13,14 +13,6 @@
         android:gravity="center">
 
         <Button
-            android:id="@+id/nearby_vendors_btn"
-            android:text="@string/nearby_vendors"
-            android:layout_width="match_parent"
-            android:layout_height="100sp"
-            android:layout_margin="20sp"
-            />
-
-        <Button
             android:id="@+id/search_items_btn"
             android:text="@string/search_items"
             android:layout_width="match_parent"

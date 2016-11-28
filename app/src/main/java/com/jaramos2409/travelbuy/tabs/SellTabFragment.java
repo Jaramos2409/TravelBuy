@@ -1,16 +1,21 @@
 package com.jaramos2409.travelbuy.tabs;
 
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.location.Location;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
         import android.view.View;
         import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
@@ -25,6 +30,7 @@ import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.jaramos2409.travelbuy.R;
 import com.jaramos2409.travelbuy.ShopItemsActivity;
 import com.jaramos2409.travelbuy.TravelBuyActivity;
+import com.jaramos2409.travelbuy.database.DBQueryHandler;
 import com.jaramos2409.travelbuy.database.DBTask;
 import com.jaramos2409.travelbuy.database.DBTypes;
 import com.jaramos2409.travelbuy.login.SignInActivity;
@@ -75,6 +81,16 @@ public class SellTabFragment extends Fragment {
             mSetShopLocationBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    /*int off = 0;
+                    try {
+                        off = Settings.Secure.getInt(getActivity().getContentResolver(), Settings.Secure.LOCATION_MODE);
+                    } catch (Settings.SettingNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                    if(off==0){
+                        Intent onGPS = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                        startActivity(onGPS);
+                    }*/
                     findLocation();
                 }
             });
@@ -128,11 +144,23 @@ public class SellTabFragment extends Fragment {
                 .requestLocationUpdates(client, request, new LocationListener() {
                     @Override
                     public void onLocationChanged(Location location) {
-                        Log.i(LOG_TAG, "Got a fix: " + location);
-
-
-                        new DBTask(getActivity(), location).execute(DBTypes.STORE_LOCATION);
+                        final Location foundLocation = location;
+                        Shop.getCurrentShopInfo().setLatitude(location.getLatitude());
+                        Shop.getCurrentShopInfo().setLongitude(location.getLongitude());
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                DBQueryHandler.storeLocation(foundLocation);
+                                getActivity().runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Toast.makeText(getActivity(), "Location Successfully Set", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                            }
+                        }).start();
                     }
                 });
     }
+
 }

@@ -1,9 +1,6 @@
 package com.jaramos2409.travelbuy.datamodels;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
-import java.util.ArrayList;
+import com.amazonaws.models.nosql.ShopsDO;
 
 /**
  * Created by EVA Unit 02 on 11/19/2016.
@@ -30,6 +27,8 @@ public class Shop  {
     private String mUsername;
     private boolean mIsSelling;
     private boolean mIsOpen;
+    private double mLatitude;
+    private double mLongitude;
 
 
     public Shop(String userId, String email, String username, boolean isSelling, String shopId, boolean isOpen) {
@@ -41,6 +40,18 @@ public class Shop  {
         mIsOpen = isOpen;
     }
 
+    public Shop(String userId, String email, String username,
+                boolean isSelling, String shopId, boolean isOpen, double latitude, double longitude) {
+        mUserId = userId;
+        mEmail = email;
+        mUsername = username;
+        mIsSelling = isSelling;
+        mShopId = shopId;
+        mIsOpen = isOpen;
+        mLatitude = latitude;
+        mLongitude = longitude;
+    }
+
     public Shop() {
         mUserId = "";
         mEmail = "";
@@ -48,6 +59,12 @@ public class Shop  {
         mIsSelling = false;
         mShopId = "";
         mIsOpen = false;
+    }
+
+    public Shop (ShopsDO shopsDO) {
+        this(shopsDO.getUserId(), shopsDO.getEmail(), shopsDO.getUsername(),
+                shopsDO.getIsSelling(), shopsDO.getShopId(), shopsDO.getIsOpen(),
+                shopsDO.getLatitude(), shopsDO.getLongitude());
     }
 
     public String getUserId() {
@@ -104,5 +121,21 @@ public class Shop  {
                 mEmail + "\n" +
                 mShopId + "\n" +
                 mIsSelling + "\n";
+    }
+
+    public double getLatitude() {
+        return mLatitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.mLatitude = latitude;
+    }
+
+    public double getLongitude() {
+        return mLongitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.mLongitude = longitude;
     }
 }

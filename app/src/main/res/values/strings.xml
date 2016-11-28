@@ -35,6 +35,8 @@
     <string name="search_with_text">Search With Text:</string>
     <string name="search_by_category">Search By Category</string>
     <string name="set_shop_location">Set Shop Location</string>
+    <string name="action_settings">Settings</string>
+    <string name="search">Find an image near you</string>
 
     <string name="search_hint">Name of the item...</string>
 

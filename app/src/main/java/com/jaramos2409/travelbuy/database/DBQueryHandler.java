@@ -13,7 +13,9 @@ import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUser;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUserPool;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMapper;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBQueryExpression;
+import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBScanExpression;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.PaginatedQueryList;
+import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.PaginatedScanList;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
@@ -69,6 +71,9 @@ public class DBQueryHandler {
             shop.setUsername(shopInfo.getUsername());
             shop.setShopId(shopInfo.getShopId());
             shop.setIsSelling(shopInfo.getIsSelling());
+            shop.setIsOpen(shopInfo.getIsOpen());
+            shop.setLatitude(shopInfo.getLatitude());
+            shop.setLongitude(shopInfo.getLongitude());
         } else {
             UserAttributes userAttributes = new UserAttributes();
 
@@ -409,11 +414,45 @@ public class DBQueryHandler {
         updateLongLat.setTableName(AMAZON_SHOP_TABLE_NAME);
         updateLongLat.addKeyEntry("userId",
                 new AttributeValue(AWSMobileClient.defaultMobileClient().getIdentityManager().getCachedUserID()));
-        updateLongLat.withUpdateExpression("set latitude = :lat AND set longitude = :long");
-        updateLongLat.addExpressionAttributeValuesEntry(":lat", new AttributeValue(Double.toString(location.getLatitude())));
-        updateLongLat.addExpressionAttributeValuesEntry(":long", new AttributeValue(Double.toString(location.getLongitude())));
+        updateLongLat.withUpdateExpression("set latitude = :lat");
+        updateLongLat.addExpressionAttributeValuesEntry(":lat", new AttributeValue().withN(Double.toString(location.getLatitude())));
         updateLongLat.setReturnValues(ReturnValue.NONE);
 
         UpdateItemResult updateResult = dynamoDB.updateItem(updateLongLat);
+
+        updateLongLat.clearExpressionAttributeValuesEntries();
+        updateLongLat.setUpdateExpression("set longitude = :long");
+        updateLongLat.addExpressionAttributeValuesEntry(":long", new AttributeValue().withN(Double.toString(location.getLongitude())));
+
+        updateResult = dynamoDB.updateItem(updateLongLat);
+    }
+
+    public static ArrayList<Shop> loadShops() {
+        ArrayList<Shop> shops = new ArrayList<>();
+
+        // Fetch the default configured DynamoDB ObjectMapper
+        final DynamoDBMapper dynamoDBMapper = AWSMobileClient.defaultMobileClient().getDynamoDBMapper();
+
+        final AmazonDynamoDB dynamoDB = AWSMobileClient.defaultMobileClient().getDynamoDBClient();
+
+        ScanRequest scanRequest = new ScanRequest();
+        Map<String,AttributeValue> expressionAttributeValues = new HashMap<>();
+        Map<String, String> expressionAttributeNames = new HashMap<>();
+
+        scanRequest.withTableName(AMAZON_SHOP_TABLE_NAME);
+        scanRequest.withFilterExpression("#N = :n");
+        expressionAttributeValues.put(":n", new AttributeValue().withN("1"));
+        expressionAttributeNames.put("#N", "isSelling");
+        scanRequest.withExpressionAttributeValues(expressionAttributeValues);
+        scanRequest.withExpressionAttributeNames(expressionAttributeNames);
+        scanRequest.withReturnConsumedCapacity(ReturnConsumedCapacity.TOTAL);
+
+        ScanResult result = dynamoDB.scan(scanRequest);
+
+        for(Map<String, AttributeValue> item : result.getItems()) {
+            shops.add(new Shop(dynamoDBMapper.marshallIntoObject(ShopsDO.class, item)));
+        }
+
+        return shops;
     }
 }
