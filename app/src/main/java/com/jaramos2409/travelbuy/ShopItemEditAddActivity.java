@@ -138,7 +138,7 @@ public class ShopItemEditAddActivity extends AppCompatActivity {
                     Log.d(LOG_TAG, "Task was cancelled: " + task.isCancelled());
                 }
 
-                Intent intent = ShopItemsActivity.newIntent(context);
+                Intent intent = ManageItemsActivity.newIntent(context);
                 setResult(RESULT_OK, intent);
                 finish();
                 onBackPressed();

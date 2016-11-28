@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -62,7 +63,9 @@ public class ShopItemVendorActivity extends AppCompatActivity {
 
         mShopItem = getIntent().getParcelableExtra(EXTRA_SHOP_ITEM);
         mItemNameTextView.setText(mShopItem.getName());
-        mPriceTextView.setText(String.format(Locale.US, "%.2f", mShopItem.getPrice()));
+        String priceFormatted = String.format(Locale.US, "%.2f",  mShopItem.getPrice());
+        priceFormatted = "$ " + priceFormatted;
+        mPriceTextView.setText(priceFormatted);
         mDescriptionTextView.setText(mShopItem.getDescription());
 
         Bitmap image = BitmapFactory.decodeFile(mShopItem.getItemPhotoPath());
@@ -77,7 +80,10 @@ public class ShopItemVendorActivity extends AppCompatActivity {
         mItemPhotoImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("content://media/external/images/media/16")));
+                Intent intent = new Intent();
+                intent.setAction(Intent.ACTION_VIEW);
+                intent.setDataAndType(Uri.parse("file://" + mShopItem.getItemId()), "image/*");
+                startActivity(intent);
             }
         });
 

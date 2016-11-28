@@ -27,7 +27,7 @@ import butterknife.OnItemClick;
 /**
  * Created by EVA Unit 02 on 11/20/2016.
  */
-public class ShopItemsActivity extends AppCompatActivity {
+public class ManageItemsActivity extends AppCompatActivity {
     private static final int RESULT_ADD_EDIT_ITEM = 450;
 
     @BindView(R.id.shop_items_listview) ListView mSearchItemListView;
@@ -39,7 +39,7 @@ public class ShopItemsActivity extends AppCompatActivity {
     private Context context = this;
 
     public static Intent newIntent(Context packageContext) {
-        Intent intent = new Intent(packageContext, ShopItemsActivity.class);
+        Intent intent = new Intent(packageContext, ManageItemsActivity.class);
         //intent.putExtra(EXTRA_ADDED_NEW_ITEM, addedNewItem);
         return intent;
     }

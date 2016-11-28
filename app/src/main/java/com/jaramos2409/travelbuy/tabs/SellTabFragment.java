@@ -1,16 +1,10 @@
 package com.jaramos2409.travelbuy.tabs;
 
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentSender;
 import android.location.Location;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.LayoutInflater;
         import android.view.View;
         import android.view.ViewGroup;
@@ -19,26 +13,18 @@ import android.widget.Toast;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
-import com.google.android.gms.location.LocationSettingsStatusCodes;
+import com.jaramos2409.travelbuy.ManageItemsActivity;
 import com.jaramos2409.travelbuy.R;
-import com.jaramos2409.travelbuy.ShopItemsActivity;
-import com.jaramos2409.travelbuy.TravelBuyActivity;
 import com.jaramos2409.travelbuy.database.DBQueryHandler;
-import com.jaramos2409.travelbuy.database.DBTask;
-import com.jaramos2409.travelbuy.database.DBTypes;
 import com.jaramos2409.travelbuy.login.SignInActivity;
 import com.jaramos2409.travelbuy.datamodels.Shop;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 public class SellTabFragment extends Fragment {
 
@@ -73,7 +59,7 @@ public class SellTabFragment extends Fragment {
 
             manageItemsBtn.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
-                    Intent intent = ShopItemsActivity.newIntent(getActivity());
+                    Intent intent = ManageItemsActivity.newIntent(getActivity());
                     startActivity(intent);
                 }
             });

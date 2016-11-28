@@ -10,6 +10,10 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
+
 /**
  * Created by EVA Unit 02 on 11/4/2016.
  */
@@ -27,6 +31,8 @@ public class MainMenuFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.main_menu_fragment, container, false);
+
+        MobileAds.initialize(getContext(), "ca-app-pub-3940256099942544~3347511713");
 
         TabLayout tabLayout = (TabLayout) view.findViewById(R.id.tab_layout);
         tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.home_tab)));
@@ -57,6 +63,10 @@ public class MainMenuFragment extends Fragment {
             }
         });
 
+
+        AdView mAdView = (AdView) view.findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
 
         return view;
     }

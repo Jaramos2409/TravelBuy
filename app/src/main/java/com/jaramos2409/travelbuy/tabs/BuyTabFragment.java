@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import com.jaramos2409.travelbuy.NearbyVendorActivity;
 import com.jaramos2409.travelbuy.R;
 import com.jaramos2409.travelbuy.SearchItemsActivity;
 
